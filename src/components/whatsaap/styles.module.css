@@ -1,0 +1,36 @@
+.content {
+    position: fixed;
+    text-decoration: none;
+    bottom: clamp(20px, 5vw, 50px);
+    right: clamp(20px, 5vw, 30px);
+    border-radius: 50%;
+    background-color: #25D366;
+    width: clamp(60px, 12vw, 80px);
+    height: clamp(60px, 12vw, 80px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.content:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-xl);
+    background-color: #20BA5A;
+}
+
+.content :global(svg) {
+    width: clamp(30px, 6vw, 40px);
+    height: clamp(30px, 6vw, 40px);
+    fill: white;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .content {
+        bottom: 20px;
+        right: 20px;
+    }
+}

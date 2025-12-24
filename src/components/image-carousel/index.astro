@@ -1,0 +1,198 @@
+---
+import styles from './styles.module.css';
+
+interface Props {
+  images: string[];
+  alt?: string;
+  variant?: 'card' | 'detail';
+}
+
+const { images, alt = 'Producto', variant = 'detail' } = Astro.props;
+const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div
+  class={styles.carousel}
+  data-variant={variant}
+  id={carouselId}
+  data-carousel-wrapper>
+  <div class={styles.carouselContainer}>
+    {
+      images.map((image, index) => (
+        <div
+          class={`${styles.slide} ${index === 0 ? styles.active : ''}`}
+          data-slide={index}
+          data-active={index === 0 ? 'true' : 'false'}>
+          <img
+            src={image}
+            alt={`${alt} - Imagen ${index + 1}`}
+            class={styles.image}
+            loading={index === 0 ? 'eager' : 'lazy'}
+          />
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    images.length > 1 && (
+      <>
+        <button
+          type="button"
+          class={styles.prevButton}
+          aria-label="Imagen anterior"
+          data-action="prev">
+          ‹
+        </button>
+        <button
+          type="button"
+          class={styles.nextButton}
+          aria-label="Siguiente imagen"
+          data-action="next">
+          ›
+        </button>
+
+        <div class={styles.indicators}>
+          {images.map((_, index) => (
+            <button
+              type="button"
+              class={`${styles.indicator} ${index === 0 ? styles.active : ''}`}
+              data-slide-to={index}
+              data-active={index === 0 ? 'true' : 'false'}
+              aria-label={`Ir a imagen ${index + 1}`}
+            />
+          ))}
+        </div>
+      </>
+    )
+  }
+</div>
+
+<script define:vars={{ carouselId }}>
+  (function () {
+    function initCarousel() {
+      const carousel = document.getElementById(carouselId);
+      if (!carousel) {
+        console.warn('Carousel not found:', carouselId);
+        return;
+      }
+
+      const slides = carousel.querySelectorAll('[data-slide]');
+      const indicators = carousel.querySelectorAll('[data-slide-to]');
+      const prevBtn = carousel.querySelector('[data-action="prev"]');
+      const nextBtn = carousel.querySelector('[data-action="next"]');
+
+      if (slides.length <= 1) return;
+
+      let currentSlide = 0;
+      const totalSlides = slides.length;
+
+      // Encontrar slide inicial activo
+      slides.forEach((slide, i) => {
+        if (slide.getAttribute('data-active') === 'true') {
+          currentSlide = i;
+        }
+      });
+
+      function updateCarousel(index) {
+        // Actualizar slides
+        slides.forEach((slide, i) => {
+          const isActive = i === index;
+          slide.setAttribute('data-active', isActive ? 'true' : 'false');
+          if (isActive) {
+            slide.classList.add('active');
+          } else {
+            slide.classList.remove('active');
+          }
+        });
+
+        // Actualizar indicators
+        indicators.forEach((indicator, i) => {
+          const isActive = i === index;
+          indicator.setAttribute('data-active', isActive ? 'true' : 'false');
+          if (isActive) {
+            indicator.classList.add('active');
+          } else {
+            indicator.classList.remove('active');
+          }
+        });
+
+        currentSlide = index;
+      }
+
+      function nextSlide() {
+        const next = (currentSlide + 1) % totalSlides;
+        updateCarousel(next);
+      }
+
+      function prevSlide() {
+        const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateCarousel(prev);
+      }
+
+      function goToSlide(index) {
+        if (index >= 0 && index < totalSlides) {
+          updateCarousel(index);
+        }
+      }
+
+      // Event listeners
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          prevSlide();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          nextSlide();
+        });
+      }
+
+      indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          goToSlide(index);
+        });
+      });
+
+      // Auto-play para cards
+      const variant = carousel.getAttribute('data-variant');
+      if (variant === 'card') {
+        let autoPlayInterval;
+
+        const startAutoPlay = () => {
+          if (autoPlayInterval) clearInterval(autoPlayInterval);
+          autoPlayInterval = setInterval(() => {
+            nextSlide();
+          }, 3000);
+        };
+
+        const stopAutoPlay = () => {
+          if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+          }
+        };
+
+        carousel.addEventListener('mouseenter', stopAutoPlay);
+        carousel.addEventListener('mouseleave', startAutoPlay);
+
+        startAutoPlay();
+      }
+    }
+
+    // Esperar a que el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCarousel);
+    } else {
+      // Usar setTimeout para asegurar que el elemento esté en el DOM
+      setTimeout(initCarousel, 0);
+    }
+  })();
+</script>

@@ -1,0 +1,67 @@
+---
+import styles from './styles.module.css';
+import AppLayout from '../layouts/app-layout.astro';
+import Content from '../components/content/index.astro';
+import SectionCard from '../components/product-card/index.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Isaju</title>
+  </head>
+  <body>
+    <AppLayout>
+      <div class={styles.title}>
+        <h1 class={styles.desc}>Fabrica de peluches hechos con amor</h1>
+        <h1 class={styles.store}>Tienda</h1>
+        <h2 class={styles.storeDesc}>
+          Aquí es donde puedes ver los productos en esta tienda.
+        </h2>
+      </div>
+      <Content>
+        <div class={styles.content}>
+          <SectionCard
+            images={['/peluche.jpg', '/peluche-blanco.jpg']}
+            name="Peluche Cafe"
+            price="$60"
+            id="1"
+          />
+          <SectionCard
+            images={['/perro.jpg']}
+            name="Peluche Perro"
+            price="$55"
+            id="2"
+          />
+          <SectionCard
+            images={['/peluche-blanco.jpg', '/peluche.jpg']}
+            name="Peluche Blanco"
+            price="$65"
+            id="3"
+          />
+          <SectionCard
+            images={['/oso-cafe.jpg']}
+            name="Oso Cafe"
+            price="$70"
+            id="4"
+          />
+          <SectionCard
+            images={['/cerdo.jpg']}
+            name="Peluche Cerdo"
+            price="$50"
+            id="5"
+          />
+          <SectionCard
+            images={['/monster.jpg']}
+            name="Peluche Monster"
+            price="$45"
+            id="6"
+          />
+        </div>
+      </Content>
+    </AppLayout>
+  </body>
+</html>

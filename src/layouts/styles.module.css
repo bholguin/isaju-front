@@ -1,0 +1,35 @@
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* Margen: altura del header (aprox 80px) + mitad del logo que sobresale (aprox 60-100px) */
+    margin-top: clamp(90px, 18vw, 90px);
+    width: 100%;
+    min-height: calc(100vh - clamp(140px, 18vw, 220px));
+    padding-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .content {
+        /* Header (aprox 60px) + mitad logo (aprox 50-85px) */
+        margin-top: clamp(100px, 16vw, 150px);
+    }
+}
+
+@media (max-width: 640px) {
+    .content {
+        /* Header (aprox 64px con padding) + mitad logo (aprox 45-75px) */
+        margin-top: clamp(100px, 15vw, 140px);
+        padding-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        /* Header (aprox 56px) + mitad logo (aprox 40-65px) */
+        margin-top: clamp(60px, 14vw, 120px);
+        padding-bottom: 1rem;
+    }
+}

@@ -1,0 +1,14 @@
+---
+import '../../global.css';
+import styles from './styles.module.css';
+import Header from '../components/header/index.astro';
+import Footer from '../components/footer/index.astro';
+import Whatsapp from '../components/whatsaap/index.astro';
+---
+
+<Header />
+<section class={styles.content}>
+  <slot />
+</section>
+<Whatsapp />
+<Footer />

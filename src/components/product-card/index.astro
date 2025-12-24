@@ -1,0 +1,26 @@
+---
+import styles from './styles.module.css';
+import ImageCarousel from '../image-carousel/index.astro';
+
+interface Props {
+  images: string | string[];
+  name?: string;
+  price?: string;
+  id?: string;
+}
+
+const { images, name = 'Peluche Cafe', price = '$60', id = '1' } = Astro.props;
+const imagesArray = Array.isArray(images) ? images : [images];
+---
+
+<a href={`/product/${id}`} class={styles.content}>
+  <div class={styles.imageContainer}>
+    <ImageCarousel images={imagesArray} alt={name} variant="detail" />
+  </div>
+  <div class={styles.description}>
+    <h3>{name}</h3>
+  </div>
+  <div class={styles.price}>
+    <span class={styles.priceValue}>{price}</span>
+  </div>
+</a>
