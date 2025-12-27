@@ -308,3 +308,20 @@
         filter: drop-shadow(0 2px 4px rgba(149, 76, 126, 0.3));
     }
 }
+
+/* Estilos para logoMobile */
+.logoContainer:global(.logoMobile) {
+    transform: translateY(30%) !important;
+}
+
+.logoContainer:global(.logoMobile) .logo {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+@media (min-width: 720px) {
+    .logoContainer:global(.logoMobile) .logo {
+        width: 150px !important;
+        height: 150px !important;
+    }
+}
