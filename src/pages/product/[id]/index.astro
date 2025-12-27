@@ -33,43 +33,41 @@ const product = products[id || '1'] || products['1'];
 ---
 
 <AppLayout>
-  <Content>
-    <section class={styles.content}>
-      <div class={styles.productContainer}>
-        <div class={styles.imageSection}>
-          <div class={styles.imageWrapper}>
-            <ImageCarousel
-              images={product.images}
-              alt={product.name}
-              variant="detail"
-            />
-          </div>
-        </div>
-
-        <div class={styles.infoSection}>
-          <div class={styles.productHeader}>
-            <h1 class={styles.productName}>{product.name}</h1>
-            <div class={styles.priceContainer}>
-              <span class={styles.priceValue}>{product.price}</span>
-            </div>
-          </div>
-
-          <div class={styles.descriptionSection}>
-            <h2 class={styles.sectionTitle}>Descripción</h2>
-            <p class={styles.description}>{product.description}</p>
-          </div>
-
-          <div class={styles.actionsSection}>
-            <a
-              href="https://wa.me/573218524293"
-              target="_blank"
-              rel="noopener noreferrer"
-              class={styles.ctaButton}>
-              Contactar por WhatsApp
-            </a>
-          </div>
+  <section class={styles.content}>
+    <div class={styles.productContainer}>
+      <div class={styles.imageSection}>
+        <div class={styles.imageWrapper}>
+          <ImageCarousel
+            images={product.images}
+            alt={product.name}
+            variant="detail"
+          />
         </div>
       </div>
-    </section>
-  </Content>
+
+      <div class={styles.infoSection}>
+        <div class={styles.productHeader}>
+          <h1 class={styles.productName}>{product.name}</h1>
+          <div class={styles.priceContainer}>
+            <span class={styles.priceValue}>{product.price}</span>
+          </div>
+        </div>
+
+        <div class={styles.descriptionSection}>
+          <h2 class={styles.sectionTitle}>Descripción</h2>
+          <p class={styles.description}>{product.description}</p>
+        </div>
+
+        <div class={styles.actionsSection}>
+          <a
+            href="https://wa.me/573218524293"
+            target="_blank"
+            rel="noopener noreferrer"
+            class={styles.ctaButton}>
+            Contactar por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </AppLayout>

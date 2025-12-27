@@ -7,7 +7,7 @@ import styles from './styles.module.css';
     <div class={styles.logoContainer} id="logo-container">
       <a href="/" class={styles.logoLink} aria-label="Ir a inicio">
         <img
-          src="/logo-mobile.png"
+          src="/logo.png"
           alt="Isaju - Catálogo de Peluches"
           class={styles.logo}
           id="header-logo"
@@ -26,34 +26,40 @@ import styles from './styles.module.css';
 
 <script>
   (function () {
-    // Solo ejecutar handleScroll en la ruta raíz
     const currentPath = window.location.pathname;
+    const header = document.getElementById('main-header');
     const logoContainer = document.getElementById('logo-container');
-    const logoContainerEl = logoContainer;
     const logo = document.getElementById(
       'header-logo'
     ) as HTMLImageElement | null;
-    logoContainerEl?.classList.add('logoMobile');
-    if (currentPath !== '/') return;
-
-    const header = document.getElementById('main-header');
 
     if (!header || !logoContainer || !logo) return;
 
     // TypeScript now knows these are not null after the check
     const headerEl = header;
+    const logoContainerEl = logoContainer;
     const logoEl = logo;
 
+    // Si la ruta es diferente de /, mostrar logo-mobile inmediatamente
+    if (currentPath !== '/') {
+      headerEl.classList.add('scrolled');
+      logoContainerEl.classList.add('scrolled');
+      logoContainerEl.classList.add('logoMobile');
+      logoEl.src = '/logo-mobile.png';
+      return;
+    }
+
+    // Si estamos en la ruta raíz, manejar el scroll
     function handleScroll() {
       if (window.scrollY > 200) {
         headerEl.classList.add('scrolled');
-        logoContainerEl?.classList.add('scrolled');
-        logoContainerEl?.classList.add('logoMobile');
+        logoContainerEl.classList.add('scrolled');
+        logoContainerEl.classList.add('logoMobile');
         logoEl.src = '/logo-mobile.png';
       } else {
         headerEl.classList.remove('scrolled');
-        logoContainerEl?.classList.remove('scrolled');
-        logoContainerEl?.classList.remove('logoMobile');
+        logoContainerEl.classList.remove('scrolled');
+        logoContainerEl.classList.remove('logoMobile');
         logoEl.src = '/logo.png';
       }
     }
