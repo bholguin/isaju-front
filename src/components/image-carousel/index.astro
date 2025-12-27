@@ -9,6 +9,7 @@ interface Props {
 
 const { images, alt = 'Producto', variant = 'detail' } = Astro.props;
 const API_HOST = import.meta.env.API_HOST;
+const isDev = import.meta.env.DEV;
 const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
 ---
 
@@ -25,7 +26,7 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
           data-slide={index}
           data-active={index === 0 ? 'true' : 'false'}>
           <img
-            src={`${API_HOST}/${image}`}
+            src={isDev ? `${API_HOST}/${image}` : image}
             alt={`${alt} - Imagen ${index + 1}`}
             class={styles.image}
             loading={index === 0 ? 'eager' : 'lazy'}
