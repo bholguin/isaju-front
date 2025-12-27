@@ -1,73 +1,71 @@
 ---
 import AppLayout from '../../../layouts/app-layout.astro';
-import Content from '../../../components/content/index.astro';
 import ImageCarousel from '../../../components/image-carousel/index.astro';
 import styles from './styles.module.css';
 
-export function getStaticPaths() {
-  return [{ params: { id: '1' } }];
-}
+const params = Astro.params;
+const API_HOST = import.meta.env.API_HOST;
+const apiUrl = `${API_HOST}/api/products/${params.id}`;
 
-const { id } = Astro.params;
-
-// Datos del producto (en el futuro esto vendría de una API o CMS)
-const products: Record<
-  string,
-  {
-    name: string;
-    price: string;
-    images: string[];
-    description: string;
-  }
-> = {
-  '1': {
-    name: 'Peluche Cafe',
-    price: '$60.000',
-    images: ['/peluche-blanco.jpg', '/peluche.jpg', '/perro.jpg'],
-    description:
-      'Este adorable peluche café está hecho con amor y cuidado artesanal. Perfecto para regalar o para tener como compañero. Cada pieza es única y está diseñada para brindar calidez y ternura.',
+const response = await fetch(apiUrl, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
   },
-};
+});
 
-const product = products[id || '1'] || products['1'];
+const data = await response.json();
+const product = data.product;
+console.log(product);
 ---
 
-<AppLayout>
-  <section class={styles.content}>
-    <div class={styles.productContainer}>
-      <div class={styles.imageSection}>
-        <div class={styles.imageWrapper}>
-          <ImageCarousel
-            images={product.images}
-            alt={product.name}
-            variant="detail"
-          />
-        </div>
-      </div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Isaju</title>
+  </head>
+  <body>
+    <AppLayout>
+      <section class={styles.content}>
+        <div class={styles.productContainer}>
+          <div class={styles.imageSection}>
+            <div class={styles.imageWrapper}>
+              <ImageCarousel
+                images={product.images}
+                alt={product.name}
+                variant="detail"
+              />
+            </div>
+          </div>
 
-      <div class={styles.infoSection}>
-        <div class={styles.productHeader}>
-          <h1 class={styles.productName}>{product.name}</h1>
-          <div class={styles.priceContainer}>
-            <span class={styles.priceValue}>{product.price}</span>
+          <div class={styles.infoSection}>
+            <div class={styles.productHeader}>
+              <h1 class={styles.productName}>{product.name}</h1>
+              <div class={styles.priceContainer}>
+                <span class={styles.priceValue}>{product.price}</span>
+              </div>
+            </div>
+
+            <div class={styles.descriptionSection}>
+              <h2 class={styles.sectionTitle}>Descripción</h2>
+              <p class={styles.description}>{product.description}</p>
+            </div>
+
+            <div class={styles.actionsSection}>
+              <a
+                href="https://wa.me/573218524293"
+                target="_blank"
+                rel="noopener noreferrer"
+                class={styles.ctaButton}>
+                Contactar por WhatsApp
+              </a>
+            </div>
           </div>
         </div>
-
-        <div class={styles.descriptionSection}>
-          <h2 class={styles.sectionTitle}>Descripción</h2>
-          <p class={styles.description}>{product.description}</p>
-        </div>
-
-        <div class={styles.actionsSection}>
-          <a
-            href="https://wa.me/573218524293"
-            target="_blank"
-            rel="noopener noreferrer"
-            class={styles.ctaButton}>
-            Contactar por WhatsApp
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-</AppLayout>
+      </section>
+    </AppLayout>
+  </body>
+</html>

@@ -3,6 +3,12 @@ import styles from './styles.module.css';
 import AppLayout from '../layouts/app-layout.astro';
 import Content from '../components/content/index.astro';
 import SectionCard from '../components/product-card/index.astro';
+
+const API_HOST = import.meta.env.API_HOST;
+const response = await fetch(`${API_HOST}/api/products`);
+const data = await response.json(); // Await the JSON parsing
+const products = data.products;
+console.log(products);
 ---
 
 <html lang="en">
@@ -24,42 +30,17 @@ import SectionCard from '../components/product-card/index.astro';
       </div>
       <Content>
         <div class={styles.content}>
-          <SectionCard
-            images={['/peluche.jpg', '/peluche-blanco.jpg']}
-            name="Peluche Cafe"
-            price="$60"
-            id="1"
-          />
-          <SectionCard
-            images={['/perro.jpg']}
-            name="Peluche Perro"
-            price="$55"
-            id="2"
-          />
-          <SectionCard
-            images={['/peluche-blanco.jpg', '/peluche.jpg']}
-            name="Peluche Blanco"
-            price="$65"
-            id="3"
-          />
-          <SectionCard
-            images={['/oso-cafe.jpg']}
-            name="Oso Cafe"
-            price="$70"
-            id="4"
-          />
-          <SectionCard
-            images={['/cerdo.jpg']}
-            name="Peluche Cerdo"
-            price="$50"
-            id="5"
-          />
-          <SectionCard
-            images={['/monster.jpg']}
-            name="Peluche Monster"
-            price="$45"
-            id="6"
-          />
+          {
+            Array.isArray(products) &&
+              products.map((product: any) => (
+                <SectionCard
+                  images={product.images}
+                  name={product.name}
+                  price={product.price}
+                  id={product.id}
+                />
+              ))
+          }
         </div>
       </Content>
     </AppLayout>
