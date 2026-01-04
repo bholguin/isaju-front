@@ -16,6 +16,13 @@ const response = await fetch(apiUrl, {
 
 const data = await response.json();
 const product = data.product;
+
+// Construir URL del producto para WhatsApp
+const productUrl = `${Astro.url.origin}/product/${params.id}`;
+const whatsappMessage = encodeURIComponent(
+  `Hola, me interesa este producto: ${productUrl}`
+);
+const whatsappUrl = `https://wa.me/573218524293?text=${whatsappMessage}`;
 ---
 
 <html lang="en">
@@ -55,7 +62,7 @@ const product = data.product;
 
             <div class={styles.actionsSection}>
               <a
-                href="https://wa.me/573218524293"
+                href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 class={styles.ctaButton}>
