@@ -32,12 +32,13 @@ console.log(products);
         <div class={styles.content}>
           {
             Array.isArray(products) &&
-              products.map((product: any) => (
+              products.map((product: any, index: number) => (
                 <SectionCard
                   images={product.images}
                   name={product.name}
                   price={product.price}
                   id={product.id}
+                  priority={index < 3}
                 />
               ))
           }

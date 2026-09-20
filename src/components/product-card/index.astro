@@ -7,15 +7,27 @@ interface Props {
   name?: string;
   price?: string;
   id?: string;
+  priority?: boolean;
 }
 
-const { images, name = 'Peluche Cafe', price = '$60', id = '1' } = Astro.props;
+const {
+  images,
+  name = 'Peluche Cafe',
+  price = '$60',
+  id = '1',
+  priority = false,
+} = Astro.props;
 const imagesArray = Array.isArray(images) ? images : [images];
 ---
 
 <a href={`/product/${id}`} class={styles.content}>
   <div class={styles.imageContainer}>
-    <ImageCarousel images={imagesArray} alt={name} variant="detail" />
+    <ImageCarousel
+      images={imagesArray}
+      alt={name}
+      variant="detail"
+      priority={priority}
+    />
   </div>
   <div class={styles.description}>
     <h3>{name}</h3>

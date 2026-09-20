@@ -5,12 +5,38 @@ interface Props {
   images: string[];
   alt?: string;
   variant?: 'card' | 'detail';
+  priority?: boolean;
 }
 
-const { images, alt = 'Producto', variant = 'detail' } = Astro.props;
+const {
+  images = [],
+  alt = 'Producto',
+  variant = 'detail',
+  priority = false,
+} = Astro.props;
 const API_HOST = import.meta.env.API_HOST;
 const isDev = import.meta.env.DEV;
 const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
+const placeholder =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E";
+
+function resolveImageSrc(image: string) {
+  if (!image) return '';
+  if (/^https?:\/\//i.test(image)) return image;
+  if (isDev && API_HOST) {
+    return `${API_HOST.replace(/\/$/, '')}/${image.replace(/^\//, '')}`;
+  }
+  return image;
+}
+
+const imageList = Array.isArray(images) ? images.filter(Boolean) : [];
+const preparedImages = imageList.map((image) => {
+  const src = resolveImageSrc(image);
+  return {
+    src,
+    fallback: image !== src ? image : src,
+  };
+});
 ---
 
 <div
@@ -20,16 +46,19 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
   data-carousel-wrapper>
   <div class={styles.carouselContainer}>
     {
-      images.map((image, index) => (
+      preparedImages.map((image, index) => (
         <div
           class={`${styles.slide} ${index === 0 ? styles.active : ''}`}
           data-slide={index}
           data-active={index === 0 ? 'true' : 'false'}>
           <img
-            src={isDev ? `${API_HOST}/${image}` : image}
+            src={index === 0 ? image.src : placeholder}
+            data-src={index === 0 ? undefined : image.src}
+            data-fallback={image.fallback}
             alt={`${alt} - Imagen ${index + 1}`}
             class={styles.image}
-            loading={index === 0 ? 'eager' : 'lazy'}
+            loading={priority && index === 0 ? 'eager' : 'lazy'}
+            fetchpriority={priority && index === 0 ? 'high' : 'auto'}
           />
         </div>
       ))
@@ -37,7 +66,7 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
   </div>
 
   {
-    images.length > 1 && (
+    preparedImages.length > 1 && (
       <>
         <button
           type="button"
@@ -55,7 +84,7 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
         </button>
 
         <div class={styles.indicators}>
-          {images.map((_, index) => (
+          {preparedImages.map((_, index) => (
             <button
               type="button"
               class={`${styles.indicator} ${index === 0 ? styles.active : ''}`}
@@ -84,6 +113,32 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
       const prevBtn = carousel.querySelector('[data-action="prev"]');
       const nextBtn = carousel.querySelector('[data-action="next"]');
 
+      function loadSlideImage(slide) {
+        if (!slide) return;
+        const img = slide.querySelector('img');
+        if (!img) return;
+
+        const realSrc = img.getAttribute('data-src');
+        if (realSrc) {
+          img.setAttribute('src', realSrc);
+          img.removeAttribute('data-src');
+        }
+      }
+
+      carousel.querySelectorAll('img').forEach((img) => {
+        img.addEventListener('error', () => {
+          const fallback = img.getAttribute('data-fallback');
+          if (!fallback) return;
+          if (
+            img.getAttribute('src') === fallback ||
+            img.currentSrc === fallback
+          ) {
+            return;
+          }
+          img.src = fallback;
+        });
+      });
+
       if (slides.length <= 1) return;
 
       let currentSlide = 0;
@@ -97,6 +152,8 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
       });
 
       function updateCarousel(index) {
+        loadSlideImage(slides[index]);
+
         // Actualizar slides
         slides.forEach((slide, i) => {
           const isActive = i === index;
@@ -182,6 +239,7 @@ const carouselId = `carousel-${Math.random().toString(36).substr(2, 9)}`;
           }
         };
 
+        loadSlideImage(slides[(currentSlide + 1) % totalSlides]);
         carousel.addEventListener('mouseenter', stopAutoPlay);
         carousel.addEventListener('mouseleave', startAutoPlay);
 
