@@ -5,9 +5,11 @@ import Content from '../components/content/index.astro';
 import SectionCard from '../components/product-card/index.astro';
 
 const API_HOST = import.meta.env.API_HOST;
-const response = await fetch(`${API_HOST}/api/products`);
+const response = await fetch(`${API_HOST}/api/products?estado=true`);
 const data = await response.json(); // Await the JSON parsing
-const products = data.products;
+const products = (data.products || []).filter(
+  (product: { estado?: boolean }) => product.estado !== false
+);
 console.log(products);
 ---
 
